@@ -11,7 +11,7 @@ namespace Demo10
 
             double[] temperaturen = { 28.0, 19.5, 32.3, 33.6, 26.5, 29.7 };
             int aantalTempBoven30 = temperaturen.Where(t => t > 30).Count();
-            int aantalTempBoven30b = temperaturen.Count(t=>t>30);
+            int aantalTempBoven30b = temperaturen.Count(t => t>30);
             //Query Expr notatie:
             int aantalTempBoven30c = (from t in temperaturen
                                       where t > 30
