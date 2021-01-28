@@ -2,19 +2,30 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+//Oefening 1 inner join: Maak een nieuwe klasse TypeProduct Met properties Id en Naam
+//Voeg aan class Product een property TypeProduct toe (string),
+//waarin de naam van het TypeProduct staat
+//Initaliseer een lijst met TypeProduct objecten
+// pas  GetProductList, zodat deze eveneens de TypeProduct properties van de producten invult
+//Schrijf een Linq query die een inner join maakt tussen TypeProduct.Naam en Product.TypeProduct
+//Sorteer eerst op Product.Naam, daarna op Typeproduct.Naam
+//Geef een anonymous list terug van TypeProduct namen en Product namen
+
+//Oefening 2 inner join:Wijzig daarna eens de property TypeProduct(string) in TypeProductId(int) in de class Product
+//En maak dan eens de join tussen Product.TypeProductId en TypeProduct.Id (sortering en resultaat blijven hetzelfde)
 namespace DemoJoins
 {
+    class TypeProduct
+    { 
+        public int Id { get; set; }
+        public string Naam { get; set; }
+    }
     class Product//:IComparable<Product>
     { 
         public string Naam { get; set; }
         public string Category { get; set; }
-
-        //public int CompareTo([AllowNull] Product other)
-        //{
-        //    return Naam.CompareTo(other.Naam);
-        //}
-        //public int AantalInStock { get; set; }
-        //public double Prijs { get; set; }
+       // public string TypeProduct { get; set; } 
+        public int TypeProductId {get;set;}
 
     }
     class Category
@@ -26,12 +37,37 @@ namespace DemoJoins
     {
         private static List<Product> _producten;
         private static List<Category> _categories;
+        private static List<TypeProduct> _typeProducten;
         static void Main(string[] args)
         {
            _producten = GetProductList();
-            _categories = GetCategoryList();
-           // Demo1();
-            Demo2();
+           _categories = GetCategoryList();
+           _typeProducten = GetTypeProducten();
+            // Demo1();
+            //   Demo2();
+            Oefening2();
+        }
+
+        private static void Oefening2()
+        {
+            var queryResultList = (from typeProd in _typeProducten
+                                   join prod in _producten on typeProd.Id equals prod.TypeProductId
+                                   orderby prod.Naam, typeProd.Naam
+                                   select new
+                                   {
+                                       ProdTypeNaam = typeProd.Naam,
+                                       ProductNaam = prod.Naam
+                                   }).ToList();
+
+            queryResultList.ForEach(item => Console.WriteLine($"ProductType: {item.ProdTypeNaam}; ProductNaam: {item.ProductNaam}"));
+        }
+
+        private static List<TypeProduct> GetTypeProducten()
+        {
+            return new List<TypeProduct>() {
+                new TypeProduct(){ Id=1, Naam="Basis"},
+                new TypeProduct() { Id=2, Naam="Luxe"}
+            };
         }
 
         private static List<Category> GetCategoryList()
@@ -77,11 +113,11 @@ namespace DemoJoins
         private static List<Product> GetProductList()
         {
             return new List<Product>() { 
-                new Product { Naam="Brood", Category="Voeding"},
-                new Product{ Naam = "Boter", Category="Voeding"},
-                new Product { Naam= "Spuitwater",Category="Drank"},
-                new Product { Naam = "Bier", Category="Drank"},
-                new Product { Naam = "Glas", Category="Servies"}
+                new Product { Naam="Brood", Category="Voeding", TypeProductId=1},
+                new Product{ Naam = "Boter", Category="Voeding", TypeProductId=1},
+                new Product { Naam= "Spuitwater",Category="Drank", TypeProductId=1},
+                new Product { Naam = "Bier", Category="Drank", TypeProductId=2},
+                new Product { Naam = "Glas", Category="Servies", TypeProductId=2}
             };
         }
     }
