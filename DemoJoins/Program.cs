@@ -45,7 +45,69 @@ namespace DemoJoins
            _typeProducten = GetTypeProducten();
             // Demo1();
             //   Demo2();
-            Oefening2();
+            // Oefening2();
+            //Demo1GroupJoin();
+            Demo2GroupJoin();
+        }
+
+        private static void Demo2GroupJoin()
+        {
+            var queryResultGroep = from cat in _categories
+                                   join prod in _producten
+                                   on cat.Naam equals prod.Category into prodGroep
+                                   orderby cat.Naam
+                                   select new { 
+                                        Categorie = cat.Naam,
+                                        Producten = prodGroep
+                                   };
+            foreach (var groep in queryResultGroep)
+            {
+                Console.WriteLine(groep.Categorie + ":");
+                foreach (Product product in groep.Producten)
+                {
+                    Console.WriteLine("\t" + product.Naam);
+                }
+            }
+
+        }
+
+        private static void Demo1()
+        {
+            string[] categories = { "Voeding", "Drank" };
+            var queryResult = from cat in categories
+                              join prod in _producten on cat equals prod.Category
+                              orderby cat, prod.Naam
+                              select new
+                              {
+                                  Categorie = cat,
+                                  ProductNaam = prod.Naam
+                              };
+
+            foreach (var item in queryResult)
+            {
+                Console.WriteLine($"Category: {item.Categorie}; ProductNaam: {item.ProductNaam}");
+            }
+        }
+
+        private static void Demo1GroupJoin()
+        {
+            string[] categories = { "Voeding", "Drank" };
+            var queryResultGroup = from cat in categories
+                                   join prod in _producten on cat equals prod.Category into prodGroep
+                                   select new
+                                   {
+                                       Categorie = cat,
+                                       Producten = prodGroep
+                                   };
+            foreach (var groep in queryResultGroup)
+            {
+                Console.WriteLine(groep.Categorie + ":");
+                foreach (Product product in groep.Producten)
+                {
+                    Console.WriteLine("\t" + product.Naam);
+                }
+            }
+
         }
 
         private static void Oefening2()
@@ -92,23 +154,7 @@ namespace DemoJoins
 
         }
 
-        private static void Demo1()
-        {
-            string[] categories = { "Voeding", "Drank" };
-            var queryResult = from cat in categories
-                              join prod in _producten on cat equals prod.Category
-                              orderby cat, prod.Naam
-                              select new
-                              {
-                                  Categorie = cat,
-                                  ProductNaam = prod.Naam
-                              };
-
-            foreach (var item in queryResult)
-            {
-                Console.WriteLine($"Category: {item.Categorie}; ProductNaam: {item.ProductNaam}");
-            }
-        }
+      
 
         private static List<Product> GetProductList()
         {
