@@ -11,7 +11,7 @@ namespace DemoSetOperaties
            // DemoUnion();
            // DemoIntersect();
              DemoExcept();
-           // DemoDistinct();
+          //  DemoDistinct();
         }
 
         private static void DemoDistinct()
@@ -36,9 +36,14 @@ namespace DemoSetOperaties
             IList<int> getallen1 = new List<int>() { 1, 2, 3, 4 };
             IList<int> getallen2 = new List<int>() { 2, 3, 4, 5 };
 
-            var resultaat = getallen1.Intersect(getallen2);
+            var resultaat = getallen1.Except(getallen2); //opgelet!!
             Console.WriteLine("Getallen die in de 1ste lijst voorkomen én niet in de 2de");
             foreach (int getal in resultaat)
+                Console.WriteLine(getal);
+
+            var resultaat2 = getallen2.Except(getallen1);
+            Console.WriteLine("Getallen die in de 2de lijst voorkomen én niet in de 1ste");
+            foreach (int getal in resultaat2)
                 Console.WriteLine(getal);
         }
 
