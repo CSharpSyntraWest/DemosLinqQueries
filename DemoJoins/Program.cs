@@ -13,6 +13,10 @@ using System.Linq;
 
 //Oefening 2 inner join:Wijzig daarna eens de property TypeProduct(string) in TypeProductId(int) in de class Product
 //En maak dan eens de join tussen Product.TypeProductId en TypeProduct.Id (sortering en resultaat blijven hetzelfde)
+
+
+//Oefening 3: group join: Maak een Group join tussen Product. TypeProductId en TypeProduct.Id
+//Print naar de console eerst de Naam van elke TypeProduct en daarna de product-namen voor  typeProduct
 namespace DemoJoins
 {
     class TypeProduct
@@ -47,7 +51,51 @@ namespace DemoJoins
             //   Demo2();
             // Oefening2();
             //Demo1GroupJoin();
-            Demo2GroupJoin();
+            //Demo2GroupJoin();
+            // Demo3GroupJoin();
+            // Oefening3();
+            Demo4GroupJoin();
+        }
+
+        private static void Demo4GroupJoin()
+        {
+            var methodSyntaxResultGroep = _typeProducten.GroupJoin(_producten, typeProd => typeProd.Id,
+                                                            prod => prod.TypeProductId,
+                                                            (typeProd, prodGroep) => new
+                                                            {
+                                                                TypeProduct = typeProd.Naam,
+                                                                Producten = prodGroep.OrderByDescending(p => p.Naam)
+                                                            });
+            foreach (var groep in methodSyntaxResultGroep)
+            {
+                Console.WriteLine(groep.TypeProduct + ":");
+                foreach (Product product in groep.Producten)
+                {
+                    Console.WriteLine("\t" + product.Naam);
+                }
+            }
+        }
+
+        private static void Oefening3()
+        {
+            var queryResultGroep = from typeProd in _typeProducten
+                                   join prod in _producten
+                                   on typeProd.Id equals prod.TypeProductId
+                                   into prodGroep
+                                   orderby typeProd.Naam
+                                   select new
+                                   {
+                                       TypeProduct = typeProd.Naam,
+                                       Producten = from p in prodGroep orderby p.Naam descending select p//prodGroep.OrderByDescending(p => p.Naam) //
+                                   };
+            foreach (var groep in queryResultGroep)
+            {
+                Console.WriteLine(groep.TypeProduct + ":");
+                foreach (Product product in groep.Producten)
+                {
+                    Console.WriteLine("\t" + product.Naam);
+                }
+            }
         }
 
         private static void Demo2GroupJoin()
@@ -70,7 +118,27 @@ namespace DemoJoins
             }
 
         }
+        private static void Demo3GroupJoin()
+        {
+            var queryResultGroep = from cat in _categories
+                                   join prod in _producten
+                                   on cat.Naam equals prod.Category into prodGroep
+                                   orderby cat.Naam
+                                   select new
+                                   {
+                                       Categorie = cat.Naam,
+                                       Producten = from p in prodGroep orderby p.Naam select p
+                                   };// prodGroep.OrderBy(p => p.Naam)
+            foreach (var groep in queryResultGroep)
+            {
+                Console.WriteLine(groep.Categorie + ":");
+                foreach (Product product in groep.Producten)
+                {
+                    Console.WriteLine("\t" + product.Naam);
+                }
+            }
 
+        }
         private static void Demo1()
         {
             string[] categories = { "Voeding", "Drank" };
