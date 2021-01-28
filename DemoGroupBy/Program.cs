@@ -4,12 +4,66 @@ using System.Linq;
 
 namespace DemoGroupBy
 {
+    class Dier
+    { 
+        public string Naam { get; set; }
+        public double Leeftijd { get; set; }
+       
+    }
+
+
+
     class Program
     {
         static void Main(string[] args)
         {
-           // Demo1();
-            Demo2();
+            // Demo1();
+            // Demo2();
+            Demo3();
+        }
+
+        private static void Demo3()
+        {
+            List<Dier> dieren = new List<Dier>() {
+                new Dier(){ Naam = "Bobby", Leeftijd = 4.3},
+                new Dier(){ Naam="Minou", Leeftijd = 4.6},
+                new Dier(){ Naam = "Fifi", Leeftijd=1.5},
+                new Dier(){ Naam = "Rex", Leeftijd= 1.1},
+                new Dier(){ Naam="Felix",Leeftijd=6.0}
+                };
+            var queryNotatieResultaat = from dier in dieren
+                                        group dier by Math.Floor(dier.Leeftijd) into groep
+                                        select new
+                                        {
+                                            DierKey = groep.Key,
+                                            Aantal = groep.Count(),
+                                            Minimum = groep.Min(d => d.Leeftijd),
+                                            Maximum = groep.Max(d => d.Leeftijd)
+                                        };
+
+            var methodNotatieResultaat = dieren.GroupBy(dier => Math.Floor(dier.Leeftijd), 
+                                            dier => dier.Leeftijd,
+                                            (leeftijdKey, dierengroep) => new
+                                            {
+                                                DierKey = leeftijdKey,
+                                                Aantal = dierengroep.Count(),
+                                                Minimum = dierengroep.Min(),
+                                                Maximum = dierengroep.Max()
+                                            });
+            //foreach (var groep in queryNotatieResultaat)
+            //{
+            //    Console.WriteLine(groep.DierKey + ":");
+            //    Console.WriteLine("\t:" + groep.Aantal);
+            //    Console.WriteLine("\t:" + groep.Minimum);
+            //    Console.WriteLine("\t:" + groep.Maximum);
+            //};
+            foreach (var groep in methodNotatieResultaat)
+            {
+                Console.WriteLine(groep.DierKey + ":");
+                Console.WriteLine("\tAantal dieren:" + groep.Aantal);
+                Console.WriteLine("\tMin Leeftijd:" + groep.Minimum);
+                Console.WriteLine("\tMax Leeftijd:" + groep.Maximum);
+            };
         }
 
         private static void Demo2()
